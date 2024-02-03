@@ -7,6 +7,15 @@ import Panel from "./components/Panel";
 import { BrowserRouter as Routers, Routes, Route } from "react-router-dom";
 import FullRecipe from "./components/FullRecipe";
 import MainPanel from "./components/MainPanel";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
 
 function App() {
   const [recipe, setRecipe] = useState<any>();
@@ -31,29 +40,31 @@ function App() {
 
   return (
     <>
-      <Routers>
-        <Header setSearch={setSearch} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <MainPanel>
-                <Panel recipe={recipe} loading={loading} />
-                <FullRecipe />
-              </MainPanel>
-            }
-          ></Route>
-          <Route
-            path="/:id"
-            element={
-              <MainPanel>
-                <Panel recipe={recipe} loading={loading} />
-                <FullRecipe />
-              </MainPanel>
-            }
-          ></Route>
-        </Routes>
-      </Routers>
+      <QueryClientProvider client={queryClient}>
+        <Routers>
+          <Header setSearch={setSearch} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <MainPanel>
+                  <Panel recipe={recipe} loading={loading} />
+                  <FullRecipe />
+                </MainPanel>
+              }
+            ></Route>
+            <Route
+              path="/:id"
+              element={
+                <MainPanel>
+                  <Panel recipe={recipe} loading={loading} />
+                  <FullRecipe />
+                </MainPanel>
+              }
+            ></Route>
+          </Routes>
+        </Routers>
+      </QueryClientProvider>
     </>
   );
 }
